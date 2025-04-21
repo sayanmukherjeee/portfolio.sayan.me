@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "dateDay": "19",
+    "dateMonth": "Jun",
+    "imageUrl": "/images/comimg-soon.png",
+    "title": "Breakthroughs in Tech: Must–Have Gadgets of the Year",
+    "comments": 10
+  },
+  {
+    "id": "2",
+    "dateDay": "20",
+    "dateMonth": "Jun",
+    "imageUrl": "/images/comimg-soon.png",
+    "title": "The Latest Innovations: Top Gadgets to Watch in 2024",
+    "comments": 15
+  },
+  {
+    "id": "3",
+    "dateDay": "18",
+    "dateMonth": "Jun",
+    "imageUrl": "/images/comimg-soon.png",
+    "title": "Gadget Roundup: New Releases and Upcoming Trends",
+    "comments": 8
+  }
+]

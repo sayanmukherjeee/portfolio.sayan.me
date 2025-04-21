@@ -1,24 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React from "react";
+import HeroSection from "./home/HeroSection";
+import About from "./home/About";
+import Services from "./home/Services";
+import StatsSection from "./home/StatsSection";
+import Projects from "./home/Projects";
+import Blogs from "./home/Blogs";
+import HireMe from "./home/HireMe"; // Assuming HireMe is a component that remains unchanged
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <section id="heroSection">
+        <HeroSection />
+      </section>
+
+      <section id="about">
+        <About />
+      </section>
+
+      <section id="services">
+        <Services />
+      </section>
+
+      <section id="stats">
+        <StatsSection />
+      </section>
+
+      <section id="projects">
+        <Projects />
+      </section>
+
+      <section id="blogs">
+        <Blogs />
+      </section>
+
+      <section id="hireMe">
+        <HireMe />
+      </section>
+    </>
   );
 }
 
