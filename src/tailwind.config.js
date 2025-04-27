@@ -5,6 +5,8 @@ module.exports = {
       './public/index.html',
     ],
     safelist: [
+      'fade-in-section',
+      'is-visible',
       'lazy-zoom',
       'zoom-in-visible',
     ],
