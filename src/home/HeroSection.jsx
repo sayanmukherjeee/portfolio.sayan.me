@@ -1,12 +1,13 @@
 // src/herosection.jsx
 
-import React from "react";
+import React, { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
 
 const HeroSection = () => {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [imageLoaded, setImageLoaded] = useState(false);
   return (
     <section
       id="hero"
@@ -46,12 +47,18 @@ const HeroSection = () => {
         </a>
       </div>
       {/* Right Side: Hero Image */}
-      <div className="md:w-1/3 mt-4 md:mt-0">
-        <img
-          src="/images/sayan.png"
-          alt="Hero Section"
-          className="w-full h-auto"
-        />
+      <div className="md:w-1/3 mt-4 md:mt-0 flex justify-center items-center">
+        {inView && (
+          <img
+            src="/images/sayan.png"
+            alt="Hero Section"
+            loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            className={`w-full h-auto transition-opacity duration-1000 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        )}
       </div>
     </section>
   );

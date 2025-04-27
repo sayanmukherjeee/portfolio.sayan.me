@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { ProjectsData } from "../data/ProjectsData";
 
@@ -6,6 +6,7 @@ const categories = Object.keys(ProjectsData);
 
 const ProjectDetails = ({ project, onBack }) => {
   const sliderRef = useRef();
+  const [sectionRef, sectionInView] = useInView({ triggerOnce: true, threshold: 0.1 });
 
   const scrollByWidth = (direction = 1) => {
     if (!sliderRef.current) return;
@@ -17,7 +18,12 @@ const ProjectDetails = ({ project, onBack }) => {
   };
 
   return (
-    <div className="text-center py-12 px-4">
+    <div
+      ref={sectionRef}
+      className={`text-center py-12 px-4 project-details-section fade-in-section ${
+        sectionInView ? "is-visible" : ""
+      }`}
+    >
       <button
         onClick={onBack}
         className="mb-6 px-5 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
@@ -27,7 +33,7 @@ const ProjectDetails = ({ project, onBack }) => {
       <h2 className="text-3xl font-bold mb-6">{project.name}</h2>
 
       <div className="relative max-w-3xl mx-auto">
-        {/* ← Prev (desktop only) */}
+        {/* Prev Button */}
         <button
           onClick={() => scrollByWidth(-1)}
           className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 z-10"
@@ -35,40 +41,17 @@ const ProjectDetails = ({ project, onBack }) => {
           ‹
         </button>
 
-        {/* Scroll‑snap container */}
+        {/* Slider */}
         <div
           ref={sliderRef}
           className="overflow-x-auto scroll-smooth snap-x snap-mandatory flex gap-4 px-4 py-6"
         >
           {project.images.map((src, i) => (
-            <div
-              key={i}
-              className="
-                snap-center
-                flex-shrink-0
-                w-full
-                h-[340px] sm:h-[500px] md:h-[340px]
-                rounded-lg
-                overflow-hidden
-                shadow-lg
-              "
-            >
-              <img
-                src={src}
-                alt={`${project.name} screenshot ${i + 1}`}
-                className="object-cover rounded-lg"
-                style={{
-                  width: "800px",
-                  height: "340px",
-                  maxWidth: "100%",
-                  margin: "0 auto",
-                }}
-              />
-            </div>
+            <ImageWithFadeIn key={i} src={src} alt={`${project.name} screenshot ${i + 1}`} />
           ))}
         </div>
 
-        {/* → Next (desktop only) */}
+        {/* Next Button */}
         <button
           onClick={() => scrollByWidth(1)}
           className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 z-10"
@@ -91,10 +74,66 @@ const ProjectDetails = ({ project, onBack }) => {
   );
 };
 
+const ImageWithFadeIn = ({ src, alt }) => {
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.2 });
+
+  return (
+    <div
+      ref={ref}
+      className="snap-center flex-shrink-0 w-full h-[340px] sm:h-[500px] md:h-[340px] rounded-lg overflow-hidden shadow-lg"
+    >
+      {inView && (
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          className="object-cover rounded-lg opacity-0 transition-opacity duration-[2000ms] ease-in-out"
+          onLoad={(e) => (e.target.style.opacity = 1)}
+          style={{
+            width: "800px",
+            height: "340px",
+            maxWidth: "100%",
+            margin: "0 auto",
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState("All Projects");
   const [selectedProject, setSelectedProject] = useState(null);
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const imgRefs = useRef([]);
+
+  useEffect(() => {
+    if (!imgRefs.current.length) return; // jodi kono image na thake tahole observe koro na
+  
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("zoom-in-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+  
+    imgRefs.current.forEach(img => {
+      if (img) observer.observe(img);
+    });
+  
+    return () => {
+      imgRefs.current.forEach(img => {
+        if (img) observer.unobserve(img);  // ⬅️ observer theke properly unobserve korte hobe
+      });
+      observer.disconnect();
+    };
+  }, [activeCategory, selectedProject]); // ⬅️ ekhane **selectedProject** ke dependency hishebe add koro
+  
 
   if (selectedProject) {
     return (
@@ -145,9 +184,11 @@ const Projects = () => {
           >
             <div className="relative h-72 overflow-hidden rounded-md">
               <img
+                ref={el => (imgRefs.current[index] = el)}
                 src={project.images[0]}
                 alt={project.name}
-                className="w-full h-full object-cover transform transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] scale-100 group-hover:scale-90"
+                loading="lazy"
+                className="lazy-zoom w-full h-full object-cover transform transition-transform duration-700 ease-in-out scale-90"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
