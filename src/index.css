@@ -45,9 +45,3 @@ code {
   opacity: 1;
   transform: scale(1);
 }
-
-/* Utility (Optional) */
-img {
-  max-width: 100%;
-  display: block;
-}
