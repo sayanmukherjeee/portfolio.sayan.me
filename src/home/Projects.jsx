@@ -23,7 +23,6 @@ const ImageWithZoom = ({ src, alt, innerRef }) => {
 
 // Project card
 const ProjectCard = ({ project, onSelect, imgRef }) => {
-  console.log(project.images[0]);
   return (
     <div className="relative group overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 rounded-md border-8 border-green-500">
       <ImageWithZoom src={project.images[0]} alt={project.name} innerRef={imgRef} />
